@@ -75,8 +75,8 @@ class GridFieldFilter implements GridField_HTMLProvider, GridField_DataManipulat
 
 				$field = new FieldGroup(
 					$field,
-					$filterbutton = new GridField_Action($gridField, 'filter', _t('GridField.Filter', "Filter"), 'filter', null),
-					$resetbutton = new GridField_Action($gridField, 'reset', _t('GridField.ResetFilter', "Reset"), 'reset', null)
+					$filterbutton = new GridField_FormAction($gridField, 'filter', _t('GridField.Filter', "Filter"), 'filter', null),
+					$resetbutton = new GridField_FormAction($gridField, 'reset', _t('GridField.ResetFilter', "Reset"), 'reset', null)
 				);
 
 				$filterbutton->addExtraClass('ss-gridfield-button-filter');

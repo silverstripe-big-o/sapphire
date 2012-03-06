@@ -1,16 +1,12 @@
 <?php
 /**
- * Allows to detach an item from an existing has_many or many_many relationship.
- * Similar to {@link GridFieldDeleteAction}, but allows to distinguish between 
- * a "delete" and "detach" action in the UI - and to use both in parallel, if required.
- * Requires the GridField to be populated with a {@link RelationList} rather than a plain {@link DataList}.
- * Often used alongside {@link GridFieldRelationAdd} to add existing records to the relationship.
- * For easier setup, have a look at a sample configuration in {@link GridFieldConfig_RelationEditor}.
+ * This class is an GridField Component that add Delete action for Objects in the GridField.
+ * See {@link GridFieldRelationDelete} for detaching an item from the current relationship instead.
  */
-class GridFieldRelationDelete implements GridField_ColumnProvider, GridField_ActionProvider {
+class GridFieldDeleteAction implements GridField_ColumnProvider, GridField_ActionProvider {
 	
 	/**
-	 * Add a column 'UnlinkRelation'
+	 * Add a column 'Delete'
 	 * 
 	 * @param type $gridField
 	 * @param array $columns 
@@ -33,7 +29,7 @@ class GridFieldRelationDelete implements GridField_ColumnProvider, GridField_Act
 	}
 	
 	/**
-	 * Don't add an title
+	 * Add the title 
 	 * 
 	 * @param GridField $gridField
 	 * @param string $columnName
@@ -62,7 +58,7 @@ class GridFieldRelationDelete implements GridField_ColumnProvider, GridField_Act
 	 * @return array 
 	 */
 	public function getActions($gridField) {
-		return array('unlinkrelation');
+		return array('deleterecord');
 	}
 	
 	/**
@@ -75,11 +71,12 @@ class GridFieldRelationDelete implements GridField_ColumnProvider, GridField_Act
 	public function getColumnContent($gridField, $record, $columnName) {
 		$field = new GridField_FormAction(
 			$gridField, 
-			'UnlinkRelation'.$record->ID, 
-			_t('GridAction.UnlinkRelation', "Unlink"), 
-			"unlinkrelation", 
+			'DeleteRecord'.$record->ID, 
+			_t('GridAction.Delete', "delete"), 
+			"deleterecord", 
 			array('RecordID' => $record->ID)
 		);
+		$field->addExtraClass('gridfield-button-delete');
 		$output = $field->Field();
 		return $output;
 	}
@@ -94,11 +91,12 @@ class GridFieldRelationDelete implements GridField_ColumnProvider, GridField_Act
 	 * @return void
 	 */
 	public function handleAction(GridField $gridField, $actionName, $arguments, $data) {
-		$id = $arguments['RecordID'];
-		$item = $gridField->getList()->byID($id);
-		if(!$item) return;
-		if($actionName == 'unlinkrelation') {
-			$gridField->getList()->remove($item);
+		if($actionName == 'deleterecord') {
+			$id = $arguments['RecordID'];
+			// Always deletes a record. Use GridFieldRelationDelete to detach it from the current relationship.
+			$item = $gridField->getList()->byID($id);
+			if(!$item) return;
+				$item->delete();
 		}
 	}
 }
