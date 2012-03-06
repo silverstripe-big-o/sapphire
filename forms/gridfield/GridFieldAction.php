@@ -163,7 +163,7 @@ class GridFieldAction_Delete implements GridField_ColumnProvider, GridField_Acti
 	 * @return string - the HTML for the column 
 	 */
 	public function getColumnContent($gridField, $record, $columnName) {
-		$field = new GridField_Action(
+		$field = new GridField_FormAction(
 			$gridField, 
 			'DeleteRecord'.$record->ID, 
 			_t('GridAction.Delete', "delete"), 

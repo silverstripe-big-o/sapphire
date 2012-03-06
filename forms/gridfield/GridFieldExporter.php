@@ -39,7 +39,7 @@ class GridFieldExporter implements GridField_HTMLProvider, GridField_ActionProvi
 	 * Place the export button in a <p> tag below the field
 	 */
 	public function getHTMLFragments($gridField) {
-		$button = new GridField_Action(
+		$button = new GridField_FormAction(
 			$gridField, 
 			'export', 
 			_t('TableListField.CSVEXPORT', 'Export to CSV'),
@@ -130,6 +130,7 @@ class GridFieldExporter implements GridField_HTMLProvider, GridField_ActionProvi
 	 */
 	function setExportColumns($cols) {
 		$this->exportColumns = $cols;
+		return $this;
 	}
 	
 	/**
@@ -144,6 +145,7 @@ class GridFieldExporter implements GridField_HTMLProvider, GridField_ActionProvi
 	 */
 	function setCsvSeparator($separator) {
 		$this->csvSeparator = $separator;
+		return $this;
 	}
 
 	/**
@@ -158,6 +160,7 @@ class GridFieldExporter implements GridField_HTMLProvider, GridField_ActionProvi
 	 */
 	function setCsvHasHeader($bool) {
 		$this->csvHasHeader = $bool;
+		return $this;
 	}
 
 

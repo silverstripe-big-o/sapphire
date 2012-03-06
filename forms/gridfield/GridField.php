@@ -654,13 +654,14 @@ class GridField extends FormField {
 
 
 /**
- * This class is the base class when you want to have an action that alters the state of the gridfield
+ * This class is the base class when you want to have an action that alters the state of the gridfield,
+ * rendered as a button element. 
  * 
  * @package sapphire
  * @subpackage forms
  * 
  */
-class GridField_Action extends FormAction {
+class GridField_FormAction extends FormAction {
 
 	/**
 	 *
@@ -777,7 +778,7 @@ class GridField_Action extends FormAction {
 			'DataURL' => $this->gridField->Link(),
 		));
 
-		return $data->renderWith('GridField_Action');
+		return $data->renderWith('GridField_FormAction');
 	}
 
 	/**

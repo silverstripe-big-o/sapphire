@@ -73,7 +73,7 @@ class GridFieldRelationDelete implements GridField_ColumnProvider, GridField_Act
 	 * @return string - the HTML for the column 
 	 */
 	public function getColumnContent($gridField, $record, $columnName) {
-		$field = new GridField_Action(
+		$field = new GridField_FormAction(
 			$gridField, 
 			'UnlinkRelation'.$record->ID, 
 			_t('GridAction.UnlinkRelation', "Unlink"), 

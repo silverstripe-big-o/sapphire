@@ -95,28 +95,28 @@ class GridFieldPaginator implements GridField_HTMLProvider, GridField_DataManipu
 
 		// Ten pages back button
 		$prev10PageNum = $this->currentPage - 10 <= 1 ? 1 : $this->currentPage - 10;
-		$prev10Page = new GridField_Action($gridField, 'pagination_prev10', '-10', 'paginate', 1);
+		$prev10Page = new GridField_FormAction($gridField, 'pagination_prev10', '-10', 'paginate', 1);
 		$prev10Page->addExtraClass('ss-gridfield-prev10page');
 		if($this->currentPage == 1)
 			$prev10Page = $prev10Page->performDisabledTransformation();
 
 		// Previous page button
 		$previousPageNum = $this->currentPage <= 1 ? 1 : $this->currentPage - 1;
-		$previousPage = new GridField_Action($gridField, 'pagination_prev', 'Previous', 'paginate', $previousPageNum);
+		$previousPage = new GridField_FormAction($gridField, 'pagination_prev', 'Previous', 'paginate', $previousPageNum);
 		$previousPage->addExtraClass('ss-gridfield-previouspage');
 		if($this->currentPage == 1)
 			$previousPage = $previousPage->performDisabledTransformation();
 
 		// Next page button
 		$nextPageNum = $this->currentPage >= $totalPages ? $totalPages : $this->currentPage + 1;
-		$nextPage = new GridField_Action($gridField, 'pagination_next', 'Next', 'paginate', $nextPageNum);
+		$nextPage = new GridField_FormAction($gridField, 'pagination_next', 'Next', 'paginate', $nextPageNum);
 		$nextPage->addExtraClass('ss-gridfield-nextpage');
 		if($this->currentPage == $totalPages)
 			$nextPage = $nextPage->performDisabledTransformation();
 
 		// Ten pages forward button
 		$next10PageNum = $this->currentPage + 10 >= $totalPages ? $totalPages : $this->currentPage + 10;
-		$next10Page = new GridField_Action($gridField, 'pagination_next10', '+10', 'paginate', $next10PageNum);
+		$next10Page = new GridField_FormAction($gridField, 'pagination_next10', '+10', 'paginate', $next10PageNum);
 		$next10Page->addExtraClass('ss-gridfield-next10page');
 		if($this->currentPage == $totalPages)
 			$next10Page = $next10Page->performDisabledTransformation();
