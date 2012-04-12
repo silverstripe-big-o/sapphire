@@ -165,6 +165,9 @@ body.cms {
 }
 
 .cms-edit-form {
+	&#Form_ListView{
+		display:block;
+	}
 	.cms-content-header-tabs {
 		.ui-tabs-nav {
 			li {
