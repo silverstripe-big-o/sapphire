@@ -118,6 +118,10 @@ body.cms {
 		max-width: $grid-x*50;
 		margin: 0;
 		@include hide-text-overflow();
+
+		&#page-title-heading {
+			max-width:100%;
+		}
 	}
 
 	& > div {
