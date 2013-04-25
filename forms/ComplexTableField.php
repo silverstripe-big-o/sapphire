@@ -37,6 +37,9 @@ class ComplexTableField extends TableListField {
 	 */
 	protected $addTitle;
     
+  /**
+   * @var FieldSet|callable
+   */
 	protected $detailFormFields;
 	
 	protected $viewAction, $sourceJoin, $sourceItems;
@@ -126,6 +129,12 @@ class ComplexTableField extends TableListField {
 	 * @var boolean
 	 */
 	protected $relationAutoSetting = true;
+
+	/**
+	 * Called after an item is saved.
+	 * @var array Of callable (arguments: $obj, $data, $form)
+	 */
+	protected $callbacksAfterSave = array();
 	
 	/**
 	 * Default size for the popup box
@@ -197,7 +206,7 @@ class ComplexTableField extends TableListField {
 	 * @param string $name
 	 * @param string $sourceClass
 	 * @param array $fieldList
-	 * @param FieldSet $detailFormFields
+	 * @param FieldSet|callable $detailFormFields
 	 * @param string $sourceFilter
 	 * @param string $sourceSort
 	 * @param string $sourceJoin
@@ -476,6 +485,9 @@ JS;
 	function getCustomFieldsFor($childData) {
 		if($this->detailFormFields instanceof FieldSet) {
 			return $this->detailFormFields;
+		} else if(is_callable($this->detailFormFields)) {
+			$fn = $this->detailFormFields;
+			return $fn($childData);
 		}
 		
 		$fieldsMethod = $this->detailFormFields;
@@ -651,7 +663,9 @@ JS;
 			$parentRecord = DataObject::get_by_id($data['ctf']['parentClass'], (int) $data['ctf']['sourceID']);
 			$relationName = $data['ctf']['manyManyRelation'];
 			$componentSet = $parentRecord ? $parentRecord->getManyManyComponents($relationName) : null;
-			if($componentSet) $componentSet->add($childData);
+			// Requires additional fields in this naming convention
+			$extaData = isset($data['ctf']['manyManyExtraFields']) ? $data['ctf']['manyManyExtraFields'] : array();
+			if($componentSet) $componentSet->add($childData, $extaData);
 		}
 		
 		if(isset($data['ctf']['hasManyRelation'])) {
@@ -660,6 +674,10 @@ JS;
 			
 			$componentSet = $parentRecord ? $parentRecord->getComponents($relationName) : null;
 			if($componentSet) $componentSet->add($childData);
+		}
+
+		foreach($this->callbacksAfterSave as $callback) {
+			$callback($childData, $data, $form);
 		}
 		
 		$referrer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
@@ -681,7 +699,15 @@ JS;
 		
 		$form->sessionMessage($message, 'good');
 
-		Director::redirectBack();
+		Director::redirect($editLink);
+	}
+
+	function getCallbacksAfterSave() {
+		return $this->callbacksAfterSave;
+	}
+
+	function setCallbacksAfterSave($callbacks) {
+		$this->callbacksAfterSave = $callbacks;
 	}
 }
 
@@ -828,13 +854,17 @@ class ComplexTableField_ItemRequest extends TableListField_ItemRequest {
 			$form->sessionMessage($e->getResult()->message(), 'bad');
 			return Director::redirectBack();
 		}
-		
+
 		// Save the many many relationship if it's available
 		if(isset($data['ctf']['manyManyRelation'])) {
 			$parentRecord = DataObject::get_by_id($data['ctf']['parentClass'], (int) $data['ctf']['sourceID']);
 			$relationName = $data['ctf']['manyManyRelation'];
 			$componentSet = $parentRecord->getManyManyComponents($relationName);
 			$componentSet->add($dataObject);
+		}
+
+		foreach($this->ctf->getCallbacksAfterSave() as $callback) {
+			$callback($dataObject, $data, $form);
 		}
 		
 		$referrer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
